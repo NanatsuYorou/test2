@@ -1,111 +1,149 @@
-  "use strict";
+/* eslint-disable prefer-arrow-callback */
+/* eslint-disable prefer-template */
+// // eslint-disable-next-line lines-around-directive, strict
 
-  const REG_PHONE = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/;
-  const REG_EMAIL = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-  const REG_KIRILLIC = /^([А-Яа-я]){2,20}$/;
-  const REG_COMPANY = /^[A-Za-zА-Яа-я0-9_\-\+\.@ ]+$/;
+// "use strict";
 
-  function showForm(id) {
-    document.querySelector('.flex__container').classList.add('hide');
-    document.getElementById(id).classList.remove('hide');
-    document.getElementById(id).classList.add('show');
+function LoginValidator(loginString, regObj) {
+  const regExpEmail = new RegExp(regObj.regemail);
+  const regExpPhone = new RegExp(regObj.regphone);
+  if (!regExpEmail.test(loginString) && !regExpPhone.test(loginString)) {
+    return "Некорректный логин";
+  }
+  return undefined;
+}
+
+function PhoneValidator(phoneString, regStr) {
+  const regEx = new RegExp(regStr);
+  if (!regEx.test(phoneString)) {
+    return "Неверно введен номер телефона";
+  }
+  return undefined;
+}
+
+function EmailValidator(emailString, regStr) {
+  const regEx = new RegExp(regStr);
+  if (!regEx.test(emailString)) {
+    return "Некорректный email";
+  }
+  return undefined;
+}
+
+function KirillicValidator(kirillicString, regStr) {
+  const regEx = new RegExp(regStr);
+  if (!regEx.test(kirillicString)) {
+    return "Только кириллица";
+  }
+  return undefined;
+}
+
+function CompanyValidator(companyString, regStr) {
+  const regEx = new RegExp(regStr);
+  if (!regEx.test(companyString)) {
+    return "Недопустимое название";
+  }
+  return undefined;
+}
+
+function ShowError(input, errorMessage) {
+  input.classList.add("error");
+  const errorElement = document.querySelector(
+    "#" + input.id + " + .errorMessage"
+  );
+  errorElement.innerHTML = errorMessage;
+}
+
+function HideError(event) {
+  const input = event.target;
+  input.classList.remove("error");
+  const errorElement = document.querySelector(
+    "#" + input.id + " + .errorMessage"
+  );
+  errorElement.innerHTML = "";
+}
+
+function FormValidator(event) {
+  event.preventDefault();
+
+  const formId = event.target.id;
+
+  // Для совместимости с IE11
+  const inputs = [];
+  const temp = document.querySelectorAll(
+    "#" + formId + " > input[type='text']"
+  );
+  for (let i = 0; i < temp.length; i += 1) {
+    inputs.push(temp[i]);
   }
 
-  function hideForm(id) {
-    document.getElementById(id).classList.remove('show');
-    document.getElementById(id).classList.add('hide');
-    document.querySelector('.flex__container').classList.remove('hide');
-    clearAllErrors();
-  }
-
-  function submitForm(event, form_id) {
-    event.preventDefault();
-
-    let form = document.getElementById(form_id);
-    let form_data = {};
-    let errors = [];
-
-    for (let i = 0; i < form.elements.length; i++) {
-      if (form.elements[i].type !== 'submit' && form.elements[i].type !== 'checkbox') {
-
-        let isValid = validation(form.elements[i].name, form.elements[i].value).isValid;
-        let errorMessage = validation(form.elements[i].name, form.elements[i].value).errorMessage;
-
-        if (!isValid) {
-          errors.push({i: i, errorMessage: errorMessage, inputName: form.elements[i].name});
-        } else {
-          form_data[form.elements[i].name] = form.elements[i].value;
+  inputs.map(function (input) {
+    switch (input.name) {
+      case "phone":
+        {
+          const errorMessage = PhoneValidator(
+            input.value,
+            input.dataset.regstr
+          );
+          if (errorMessage) {
+            ShowError(input, errorMessage);
+          }
         }
-      } else if (form.elements[i].type == 'checkbox') {
-        form_data[form.elements[i].name] = form.elements[i].checked;
-      }
-    }
-    if (errors.length) {
-      console.log('Есть ошибки при вводе данных');
-      
-      for (let i = 0; i < errors.length; i++) {
-        form.elements[errors[i]['i']].classList.add('invalid');
-        let coords = form.elements[errors[i]['i']].getBoundingClientRect();
-        let span = document.createElement('span');
-
-        span.innerText = errors[i].errorMessage;
-        span.style.cssText = "position: absolute; color: red; font-family: 'Arial'";
-        span.classList.add('error-message');
-        span.id = errors[i].inputName + 'ErrorMessage';
-        span.style.top = coords.bottom + window.pageYOffset + 5 + 'px';
-        span.style.left = coords.left + window.pageXOffset + 10 + 'px';
-
-        document.body.appendChild(span);
-      }
-    } else {
-      console.log(JSON.stringify(form_data));
-    }
-  }
-
-  function validation(property_name, string) {
-    let isValid = false;
-    let errorMessage = '';
-    switch (property_name) {
-      case 'login': {
-          REG_EMAIL.test(string) || REG_PHONE.test(string) ? isValid = true : errorMessage = 'Некорректный логин';
-        } break;
-      case 'phone': {
-          REG_PHONE.test(string) ? isValid = true : errorMessage = 'Некорректный номер телефона';
-        } break;
-      case 'email': {
-          REG_EMAIL.test(string) ? isValid = true : errorMessage = 'Некорректный email';
-        } break;
-      case 'company': {
-          REG_COMPANY.test(string) ? isValid = true : errorMessage = 'Недопустимое имя в поле';
-        } break;
-      default: {
-          REG_KIRILLIC.test(string) ? isValid = true : errorMessage = 'Только латиница';
+        break;
+      case "email":
+        {
+          const errorMessage = EmailValidator(
+            input.value,
+            input.dataset.regstr
+          );
+          if (errorMessage) {
+            ShowError(input, errorMessage);
+          }
         }
-    } 
-    
-  
-    return {isValid: isValid, errorMessage: errorMessage};
-  }
-
-  function clearError(form_id, input_name) {
-    let form = document.getElementById(form_id);
-    form.elements[input_name].classList.remove('invalid');
-
-    let errorMessage = document.getElementById(input_name + 'ErrorMessage');
-    if(errorMessage !== null)
-      errorMessage.parentNode.removeChild(errorMessage);
-  }
-
-  function clearAllErrors() {
-    let errors = document.querySelectorAll('.error-message');
-    
-    for (let i = 0; i < errors.length; i++) {
-      errors[i].parentNode.removeChild(errors[i]);
+        break;
+      case "company":
+        {
+          const errorMessage = CompanyValidator(
+            input.value,
+            input.dataset.regstr
+          );
+          if (errorMessage) {
+            ShowError(input, errorMessage);
+          }
+        }
+        break;
+      case "login":
+        {
+          const errorMessage = LoginValidator(input.value, input.dataset);
+          if (errorMessage) {
+            ShowError(input, errorMessage);
+          }
+        }
+        break;
+      default:
+        {
+          const errorMessage = KirillicValidator(
+            input.value,
+            input.dataset.regstr
+          );
+          if (errorMessage) {
+            ShowError(input, errorMessage);
+          }
+        }
+        break;
     }
-    
-    let invalids = document.querySelectorAll('.invalid');
-    for (let i = 0; i < invalids.length; i++) {
-      invalids[i].classList.remove('invalid');
-    }
-  }
+  });
+}
 
+function ShowForm(event) {
+  const formToShow = document.getElementById(event.target.dataset.form);
+  document.querySelector(".flex__container").classList.add("hide");
+  formToShow.classList.remove("hide");
+  formToShow.classList.add("show");
+}
+
+function HideForm(event) {
+  const formToHide = document.getElementById(event.target.dataset.form);
+  document.querySelector(".flex__container").classList.remove("hide");
+  formToHide.classList.remove("show");
+  formToHide.classList.add("hide");
+}

@@ -1,64 +1,210 @@
 <!DOCTYPE html>
 <!-- saved from url=(0017)http://localhost/ -->
 <html lang="en">
-<head>
+  <head>
     <script src="./js/index.js"></script>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Тестовое задание по верстке форм на чистых html, css, js. Валидация форм с помощью js.">
-    <meta name="keywords" content="js, html, css">
-    <link rel="stylesheet" href="./css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Тестовое задание по верстке форм на чистых html, css, js. Валидация форм с помощью js."
+    />
+    <meta name="keywords" content="js, html, css" />
+    <link rel="stylesheet" href="./css/styles.css" />
     <title>Test task 2</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="wrapper">
-        <h1>Зарегистрироваться </h1>
-        <div class="flex__container">
-            <div class="flex__element">
-                <img class="preview_image" src="./images/form1.svg" alt="Форма регистрации 1, сокращенная">
-                <button class="button" onclick="showForm('modal__box1')">Form 1</button>
-            </div>
-            <div class="flex__element">
-                <img class="preview_image" src="./images/form2.svg" alt="Форма регистрации 2, детальная">
-                <button class="button" onclick="showForm('modal__box2')">Form 2</button>
-            </div>
+      <h1>Зарегистрироваться</h1>
+      <div class="flex__container">
+        <div class="flex__element">
+          <img
+            class="preview_image"
+            src="./images/form1.svg"
+            alt="Форма регистрации 1, сокращенная"
+          />
+          <button
+            class="button"
+            data-form="modal__box1"
+            onclick="ShowForm(event)"
+          >
+            Форма 1
+          </button>
         </div>
-        <div class="modal__box hide" id="modal__box1">
-            <div class="form__container">
-                <form id="form1" action="#" method="post" class="form" onsubmit="submitForm(event, 'form1')">
-                    <input type="text" name="login" required onchange="clearError('form1', 'login')" onkeypress="clearError('form1', 'login')" placeholder="Email или телефон">
-                    <input type="text" name="city" required onchange="clearError('form1', 'city')" onkeypress="clearError('form1', 'city')" placeholder="Город">
-                    <input type="checkbox" name="mailing" id="mailing1">
-                    <label for="mailing1">Я&nbsp;хочу получить рассылку после мероприятия</label>
-                    <input class="button" type="submit" value="Зарегистрироваться" />
-                </form>
-                <img class="form__image" src="./images/form1.svg " alt="Форма регистрации 1, сокращенная">
-                <p class="terms">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do&nbsp;eiusmod tempor incididunt ut&nbsp;labore et&nbsp;dolore magna aliqua. Ut&nbsp;enim ad&nbsp;minim veniam, quis nostrud exercitation ullamco laboris nisi ut&nbsp;aliquip ex&nbsp;ea&nbsp;commodo.</p>
-            </div>
-            <span class="cross" onclick="hideForm('modal__box1')"></span>
-        </div >
-        <div class="modal__box hide" id="modal__box2">
-            <div class="form__container">
-                <form id="form2" action="#" method="post" class="form" onsubmit="submitForm(event, 'form2')">
-                    <input type="text" required name="name" onchange="clearError('form2', 'name')" onkeypress="clearError('form2', 'name')" placeholder="Имя">
-                    <input type="text" required name="surname" onchange="clearError('form2', 'surname')" onkeypress="clearError('form2', 'surname')" placeholder="Фамилия">
-                    <input type="text" required name="phone" onchange="clearError('form2', 'phone')" onkeypress="clearError('form2', 'phone')" placeholder="Телефон">
-                    <input type="text" required name="email" onchange="clearError('form2', 'email')" onkeypress="clearError('form2', 'email')" placeholder="Email">
-                    <input type="text" required name="company" onchange="clearError('form2', 'company')" onkeypress="clearError('form2', 'company')" placeholder="Название компании">
-                    <input type="text" required name="region" onchange="clearError('form2', 'region')" onkeypress="clearError('form2', 'region')" placeholder="Регион">
-                    <input type="checkbox" name="mailing" id="mailing2">
-                    <label for="mailing2">Я&nbsp;хочу получить рассылку после мероприятия</label>
-                    <input type="submit" class="button" value="Зарегистрироваться" />
-                </form>
-                <div class="form__image">
-                    <img src="./images/form2.svg " alt="Форма регистрации 2, детальная">
-                </div>
-                <p class="terms">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do&nbsp;eiusmod tempor incididunt ut&nbsp;labore et&nbsp;dolore magna aliqua. Ut&nbsp;enim ad&nbsp;minim veniam, quis nostrud exercitation ullamco laboris nisi ut&nbsp;aliquip ex&nbsp;ea&nbsp;commodo.</p>
-            </div>
-            <span class="cross" onclick="hideForm('modal__box2')"></span>
-        </div >
+        <div class="flex__element">
+          <img
+            class="preview_image"
+            src="./images/form2.svg"
+            alt="Форма регистрации 2, детальная"
+          />
+          <button
+            class="button"
+            data-form="modal__box2"
+            onclick="ShowForm(event)"
+          >
+            Форма 2
+          </button>
+        </div>
+      </div>
+      <div class="modal__box hide" id="modal__box1">
+        <div class="form__container">
+          <form
+            id="form1"
+            action="#"
+            method="post"
+            class="form"
+            onsubmit="FormValidator(event)"
+          >
+            <input
+              type="text"
+              class="input-text"
+              name="login"
+              id="login"
+              data-regPhone="^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$"
+              data-regEmail="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+              oninput="HideError(event)"
+              placeholder="Email или телефон"
+            />
+            <span class="errorMessage"></span>
+            <input
+              type="text"
+              class="input-text"
+              name="city"
+              id="city"
+              data-regStr="^([А-Яа-я]){2,20}$"
+              oninput="HideError(event)"
+              placeholder="Город"
+            />
+            <span class="errorMessage"></span>
+            <input
+              class="input-checkbox"
+              type="checkbox"
+              name="mailing"
+              id="mailing1"
+            />
+            <label for="mailing1"
+              >Я&nbsp;хочу получить рассылку после мероприятия</label
+            >
+            <input class="button" type="submit" value="Зарегистрироваться" />
+          </form>
+          <img
+            class="form__image"
+            src="./images/form1.svg "
+            alt="Форма регистрации 1, сокращенная"
+          />
+        </div>
+        <p class="terms">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+          do&nbsp;eiusmod tempor incididunt ut&nbsp;labore et&nbsp;dolore magna
+          aliqua. Ut&nbsp;enim ad&nbsp;minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut&nbsp;aliquip ex&nbsp;ea&nbsp;commodo.
+        </p>
+        <span
+          class="cross"
+          data-form="modal__box1"
+          onclick="HideForm(event)"
+        ></span>
+      </div>
+      <div class="modal__box hide" id="modal__box2">
+        <div class="form__container">
+          <form
+            id="form2"
+            action="#"
+            method="post"
+            class="form"
+            onsubmit="FormValidator(event)"
+          >
+            <input
+              id="name"
+              class="input-text"
+              type="text"
+              name="name"
+              data-regStr="^([А-Яа-я]){2,20}$"
+              placeholder="Имя"
+              oninput="HideError(event)"
+            />
+            <span class="errorMessage"></span>
+            <input
+              id="surname"
+              class="input-text"
+              type="text"
+              name="surname"
+              data-regStr="^([А-Яа-я]){2,20}$"
+              placeholder="Фамилия"
+              oninput="HideError(event)"
+            />
+            <span class="errorMessage"></span>
+            <input
+              id="phone"
+              class="input-text"
+              type="text"
+              name="phone"
+              data-regStr="^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$"
+              placeholder="Телефон"
+              oninput="HideError(event)"
+            />
+            <span class="errorMessage"></span>
+            <input
+              id="email"
+              class="input-text"
+              type="text"
+              name="email"
+              data-regStr="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+              placeholder="Email"
+              oninput="HideError(event)"
+            />
+            <span class="errorMessage"></span>
+            <input
+              id="company"
+              class="input-text"
+              type="text"
+              name="company"
+              data-regStr="^[A-Za-zА-Яа-я0-9_\-\+\.@ ]+$"
+              placeholder="Название компании"
+              oninput="HideError(event)"
+            />
+            <span class="errorMessage"></span>
+            <input
+              id="region"
+              class="input-text"
+              type="text"
+              name="region"
+              data-regStr="^([А-Яа-я]){2,20}$"
+              placeholder="Регион"
+              oninput="HideError(event)"
+            />
+            <span class="errorMessage"></span>
+            <input
+              class="input-checkbox"
+              type="checkbox"
+              name="mailing"
+              id="mailing2"
+            />
+            <label for="mailing2"
+              >Я&nbsp;хочу получить рассылку после мероприятия</label
+            >
+            <input type="submit" class="button" value="Зарегистрироваться" />
+          </form>
+          <div class="form__image">
+            <img
+              src="./images/form2.svg "
+              alt="Форма регистрации 2, детальная"
+            />
+          </div>
+        </div>
+        <p class="terms">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+          do&nbsp;eiusmod tempor incididunt ut&nbsp;labore et&nbsp;dolore magna
+          aliqua. Ut&nbsp;enim ad&nbsp;minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut&nbsp;aliquip ex&nbsp;ea&nbsp;commodo.
+        </p>
+        <span
+          class="cross"
+          data-form="modal__box2"
+          onclick="HideForm(event)"
+        ></span>
+      </div>
     </div>
-
-</body>
+  </body>
 </html>
