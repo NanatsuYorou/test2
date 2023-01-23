@@ -4,7 +4,7 @@
 
 // "use strict";
 
-function LoginValidator(loginString, regObj) {
+function loginValidator(loginString, regObj) {
   const regExpEmail = new RegExp(regObj.regemail);
   const regExpPhone = new RegExp(regObj.regphone);
   if (!regExpEmail.test(loginString) && !regExpPhone.test(loginString)) {
@@ -13,7 +13,7 @@ function LoginValidator(loginString, regObj) {
   return undefined;
 }
 
-function PhoneValidator(phoneString, regStr) {
+function phoneValidator(phoneString, regStr) {
   const regEx = new RegExp(regStr);
   if (!regEx.test(phoneString)) {
     return "Неверно введен номер телефона";
@@ -21,7 +21,7 @@ function PhoneValidator(phoneString, regStr) {
   return undefined;
 }
 
-function EmailValidator(emailString, regStr) {
+function emailValidator(emailString, regStr) {
   const regEx = new RegExp(regStr);
   if (!regEx.test(emailString)) {
     return "Некорректный email";
@@ -29,7 +29,7 @@ function EmailValidator(emailString, regStr) {
   return undefined;
 }
 
-function KirillicValidator(kirillicString, regStr) {
+function kirillicValidator(kirillicString, regStr) {
   const regEx = new RegExp(regStr);
   if (!regEx.test(kirillicString)) {
     return "Только кириллица";
@@ -37,7 +37,7 @@ function KirillicValidator(kirillicString, regStr) {
   return undefined;
 }
 
-function CompanyValidator(companyString, regStr) {
+function companyValidator(companyString, regStr) {
   const regEx = new RegExp(regStr);
   if (!regEx.test(companyString)) {
     return "Недопустимое название";
@@ -45,7 +45,7 @@ function CompanyValidator(companyString, regStr) {
   return undefined;
 }
 
-function ShowError(input, errorMessage) {
+function showError(input, errorMessage) {
   input.classList.add("error");
   const errorElement = document.querySelector(
     "#" + input.id + " + .errorMessage"
@@ -53,7 +53,7 @@ function ShowError(input, errorMessage) {
   errorElement.innerHTML = errorMessage;
 }
 
-function HideError(event) {
+function hideError(event) {
   const input = event.target;
   input.classList.remove("error");
   const errorElement = document.querySelector(
@@ -62,9 +62,10 @@ function HideError(event) {
   errorElement.innerHTML = "";
 }
 
-function FormValidator(event) {
+function formValidator(event) {
   event.preventDefault();
-
+  let isFormValid = true;
+  const formData = {};
   const formId = event.target.id;
 
   // Для совместимости с IE11
@@ -80,68 +81,86 @@ function FormValidator(event) {
     switch (input.name) {
       case "phone":
         {
-          const errorMessage = PhoneValidator(
+          const errorMessage = phoneValidator(
             input.value,
             input.dataset.regstr
           );
           if (errorMessage) {
-            ShowError(input, errorMessage);
+            showError(input, errorMessage);
+            isFormValid = false;
+          } else {
+            formData[input.name] = input.value;
           }
         }
         break;
       case "email":
         {
-          const errorMessage = EmailValidator(
+          const errorMessage = emailValidator(
             input.value,
             input.dataset.regstr
           );
           if (errorMessage) {
-            ShowError(input, errorMessage);
+            showError(input, errorMessage);
+            isFormValid = false;
+          } else {
+            formData[input.name] = input.value;
           }
         }
         break;
       case "company":
         {
-          const errorMessage = CompanyValidator(
+          const errorMessage = companyValidator(
             input.value,
             input.dataset.regstr
           );
           if (errorMessage) {
-            ShowError(input, errorMessage);
+            showError(input, errorMessage);
+            isFormValid = false;
+          } else {
+            formData[input.name] = input.value;
           }
         }
         break;
       case "login":
         {
-          const errorMessage = LoginValidator(input.value, input.dataset);
+          const errorMessage = loginValidator(input.value, input.dataset);
           if (errorMessage) {
-            ShowError(input, errorMessage);
+            showError(input, errorMessage);
+            isFormValid = false;
+          } else {
+            formData[input.name] = input.value;
           }
         }
         break;
       default:
         {
-          const errorMessage = KirillicValidator(
+          const errorMessage = kirillicValidator(
             input.value,
             input.dataset.regstr
           );
           if (errorMessage) {
-            ShowError(input, errorMessage);
+            showError(input, errorMessage);
+            isFormValid = false;
+          } else {
+            formData[input.name] = input.value;
           }
         }
         break;
     }
   });
+  if (isFormValid) {
+    console.log(JSON.stringify(formData));
+  }
 }
 
-function ShowForm(event) {
+function showForm(event) {
   const formToShow = document.getElementById(event.target.dataset.form);
   document.querySelector(".flex__container").classList.add("hide");
   formToShow.classList.remove("hide");
   formToShow.classList.add("show");
 }
 
-function HideForm(event) {
+function hideForm(event) {
   const formToHide = document.getElementById(event.target.dataset.form);
   document.querySelector(".flex__container").classList.remove("hide");
   formToHide.classList.remove("show");
