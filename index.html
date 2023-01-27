@@ -58,21 +58,22 @@
             <input
               type="text"
               class="input-text"
+              required
               name="login"
               id="login"
-              data-regPhone="^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$"
-              data-regEmail="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
-              oninput="hideError(event)"
+              data-rule="phone, email"
+              oninput="hideError(event.target)"
               placeholder="Email или телефон"
             />
             <span class="errorMessage"></span>
             <input
               type="text"
+              required
               class="input-text"
               name="city"
               id="city"
-              data-regStr="^([А-Яа-я]){2,20}$"
-              oninput="hideError(event)"
+              data-rule="kirillic"
+              oninput="hideError(event.target)"
               placeholder="Город"
             />
             <span class="errorMessage"></span>
@@ -117,61 +118,67 @@
             <input
               id="name"
               class="input-text"
+              required
               type="text"
               name="name"
-              data-regStr="^([А-Яа-я]){2,20}$"
+              data-rule="kirillic"
               placeholder="Имя"
-              oninput="hideError(event)"
+              oninput="hideError(event.target)"
             />
             <span class="errorMessage"></span>
             <input
               id="surname"
               class="input-text"
+              required
               type="text"
               name="surname"
-              data-regStr="^([А-Яа-я]){2,20}$"
+              data-rule="kirillic"
               placeholder="Фамилия"
-              oninput="hideError(event)"
+              oninput="hideError(event.target)"
             />
             <span class="errorMessage"></span>
             <input
               id="phone"
               class="input-text"
+              required
               type="text"
               name="phone"
-              data-regStr="^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$"
+              data-rule="phone"
               placeholder="Телефон"
-              oninput="hideError(event)"
+              oninput="hideError(event.target)"
             />
             <span class="errorMessage"></span>
             <input
               id="email"
               class="input-text"
+              required
               type="text"
               name="email"
-              data-regStr="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+              data-rule="email"
               placeholder="Email"
-              oninput="hideError(event)"
+              oninput="hideError(event.target)"
             />
             <span class="errorMessage"></span>
             <input
               id="company"
               class="input-text"
+              required
               type="text"
               name="company"
-              data-regStr="^[A-Za-zА-Яа-я0-9_\-\+\.@ ]+$"
+              data-rule="company"
               placeholder="Название компании"
-              oninput="hideError(event)"
+              oninput="hideError(event.target)"
             />
             <span class="errorMessage"></span>
             <input
               id="region"
               class="input-text"
+              required
               type="text"
               name="region"
-              data-regStr="^([А-Яа-я]){2,20}$"
+              data-rule="kirillic"
               placeholder="Регион"
-              oninput="hideError(event)"
+              oninput="hideError(event.target)"
             />
             <span class="errorMessage"></span>
             <input

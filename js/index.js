@@ -4,45 +4,23 @@
 
 // "use strict";
 
-function loginValidator(loginString, regObj) {
-  const regExpEmail = new RegExp(regObj.regemail);
-  const regExpPhone = new RegExp(regObj.regphone);
-  if (!regExpEmail.test(loginString) && !regExpPhone.test(loginString)) {
-    return "Некорректный логин";
-  }
-  return undefined;
-}
+const KIRILLIC_REGEX = /^([А-Яа-я]){2,20}$/;
+const PHONE_REGEX = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/;
+const COMPANY_REGEX = /^[A-Za-zА-Яа-я0-9_\-\+\.@ ]+$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
 
-function phoneValidator(phoneString, regStr) {
-  const regEx = new RegExp(regStr);
-  if (!regEx.test(phoneString)) {
-    return "Неверно введен номер телефона";
-  }
-  return undefined;
-}
+const errorMessages = new Map([
+  ["kirillic", { message: "Только кириллица", validator: KIRILLIC_REGEX }],
+  [
+    "phone",
+    { message: "Неверно введен номер телефона", validator: PHONE_REGEX }
+  ],
+  ["company", { message: "Недопустимое название", validator: COMPANY_REGEX }],
+  ["email", { message: "Некорректный email", validator: EMAIL_REGEX }]
+]);
 
-function emailValidator(emailString, regStr) {
-  const regEx = new RegExp(regStr);
-  if (!regEx.test(emailString)) {
-    return "Некорректный email";
-  }
-  return undefined;
-}
-
-function kirillicValidator(kirillicString, regStr) {
-  const regEx = new RegExp(regStr);
-  if (!regEx.test(kirillicString)) {
-    return "Только кириллица";
-  }
-  return undefined;
-}
-
-function companyValidator(companyString, regStr) {
-  const regEx = new RegExp(regStr);
-  if (!regEx.test(companyString)) {
-    return "Недопустимое название";
-  }
-  return undefined;
+function validator(string, regex) {
+  return regex.test(string);
 }
 
 function showError(input, errorMessage) {
@@ -53,8 +31,7 @@ function showError(input, errorMessage) {
   errorElement.innerHTML = errorMessage;
 }
 
-function hideError(event) {
-  const input = event.target;
+function hideError(input) {
   input.classList.remove("error");
   const errorElement = document.querySelector(
     "#" + input.id + " + .errorMessage"
@@ -76,78 +53,28 @@ function formValidator(event) {
   for (let i = 0; i < temp.length; i += 1) {
     inputs.push(temp[i]);
   }
-
-  inputs.map(function (input) {
-    switch (input.name) {
-      case "phone":
-        {
-          const errorMessage = phoneValidator(
-            input.value,
-            input.dataset.regstr
-          );
-          if (errorMessage) {
-            showError(input, errorMessage);
-            isFormValid = false;
-          } else {
-            formData[input.name] = input.value;
-          }
-        }
-        break;
-      case "email":
-        {
-          const errorMessage = emailValidator(
-            input.value,
-            input.dataset.regstr
-          );
-          if (errorMessage) {
-            showError(input, errorMessage);
-            isFormValid = false;
-          } else {
-            formData[input.name] = input.value;
-          }
-        }
-        break;
-      case "company":
-        {
-          const errorMessage = companyValidator(
-            input.value,
-            input.dataset.regstr
-          );
-          if (errorMessage) {
-            showError(input, errorMessage);
-            isFormValid = false;
-          } else {
-            formData[input.name] = input.value;
-          }
-        }
-        break;
-      case "login":
-        {
-          const errorMessage = loginValidator(input.value, input.dataset);
-          if (errorMessage) {
-            showError(input, errorMessage);
-            isFormValid = false;
-          } else {
-            formData[input.name] = input.value;
-          }
-        }
-        break;
-      default:
-        {
-          const errorMessage = kirillicValidator(
-            input.value,
-            input.dataset.regstr
-          );
-          if (errorMessage) {
-            showError(input, errorMessage);
-            isFormValid = false;
-          } else {
-            formData[input.name] = input.value;
-          }
-        }
-        break;
+  inputs.forEach(function (input) {
+    const rules = input.dataset.rule.split(", ");
+    const errors = [];
+    rules.forEach(function (rule) {
+      if (!validator(input.value, errorMessages.get(rule).validator)) {
+        errors.push(errorMessages.get(rule).message);
+      } else {
+        formData[input.name] = input.value;
+      }
+    });
+    if (errors.length === rules.length) {
+      showError(input, errors.pop());
+      isFormValid = false;
     }
   });
+
+  const checkbox = document.querySelector(
+    "#" + formId + " > input[type='checkbox']"
+  );
+
+  formData[checkbox.name] = checkbox.checked;
+
   if (isFormValid) {
     console.log(JSON.stringify(formData));
   }
@@ -162,6 +89,18 @@ function showForm(event) {
 
 function hideForm(event) {
   const formToHide = document.getElementById(event.target.dataset.form);
+
+  const form = document.querySelector("#" + formToHide.id + " .form");
+
+  const inputs = document.querySelectorAll(
+    "#" + form.id + " > input[type='text']"
+  );
+
+  for (let i = 0; i < inputs.length; i += 1) {
+    inputs[i].value = "";
+    hideError(inputs[i]);
+  }
+
   document.querySelector(".flex__container").classList.remove("hide");
   formToHide.classList.remove("show");
   formToHide.classList.add("hide");
